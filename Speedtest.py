@@ -19,6 +19,8 @@ def main():
     try:
 
         # Run the Speed Test
+        # Most of the code described in the following public article:
+        # https://thepi.io/how-to-use-your-raspberry-pi-to-monitor-broadband-speed/
         response = subprocess.Popen('speedtest-cli --simple',
                                     shell=True,
                                     stdout=subprocess.PIPE).stdout.read()
