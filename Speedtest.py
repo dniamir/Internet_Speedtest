@@ -15,7 +15,14 @@ HEADER = ['Date',
           'Download Speed [Mbit/s]',
           'Upload Speed [Mbit/s]']
 
+
 def main():
+
+    # Get directory of script
+    abspath = os.path.abspath(__file__)
+    script_path = os.path.dirname(abspath)
+    os.chdir(script_path)
+
     try:
 
         # Run the Speed Test
