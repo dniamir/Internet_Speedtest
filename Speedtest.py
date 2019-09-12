@@ -15,19 +15,10 @@ HEADER = ['Date',
           'Download Speed [Mbit/s]',
           'Upload Speed [Mbit/s]']
 
-
 def main():
-
-    # Get directory of script
-    abspath = os.path.abspath(__file__)
-    script_path = os.path.dirname(abspath)
-    os.chdir(script_path)
-
     try:
 
         # Run the Speed Test
-        # Most of the code described in the following public article:
-        # https://thepi.io/how-to-use-your-raspberry-pi-to-monitor-broadband-speed/
         response = subprocess.Popen('speedtest-cli --simple',
                                     shell=True,
                                     stdout=subprocess.PIPE).stdout.read()
@@ -35,8 +26,7 @@ def main():
         # Find the Values in the String
         response_string = str(response)
         ping = re.findall('Ping:\s(.*?)\s', response_string, re.MULTILINE)
-        download = re.findall('Download:\s(.*?)\s', response_string,
-                              re.MULTILINE)
+        download = re.findall('Download:\s(.*?)\s', response_string,re.MULTILINE)
         upload = re.findall('Upload:\s(.*?)\s', response_string, re.MULTILINE)
 
         # Convert the Values into Floats
