@@ -4,8 +4,7 @@ import subprocess
 import time
 import csv
 
-from pydrive.auth import GoogleAuth
-from pydrive.drive import GoogleDrive
+import speedtest
 
 # Script Variables
 FILENAME = 'internet_speedtest.csv'
@@ -26,36 +25,23 @@ def main():
     try:
 
         # Run the Speed Test
-        # Most of the code described in the following public article:
-        # https://thepi.io/how-to-use-your-raspberry-pi-to-monitor-broadband-speed/
-        response = subprocess.Popen('/usr/local/bin/speedtest-cli --simple',
-                                    shell=True,
-                                    stdout=subprocess.PIPE).stdout.read()
-
-        # Find the Values in the String
-        response_string = str(response)
-        ping = re.findall('Ping:\s(.*?)\s', response_string, re.MULTILINE)
-        download = re.findall('Download:\s(.*?)\s', response_string,
-                              re.MULTILINE)
-        upload = re.findall('Upload:\s(.*?)\s', response_string, re.MULTILINE)
-
-        # Convert the Values into Floats
-        ping = [float(x) for x in ping]
-        download = [float(x) for x in download]
-        upload = [float(x) for x in upload]
+        speed_test = speedtest.Speedtest()
+        download = round(speed_test.download() / 1e6, 2)
+        upload = round(speed_test.upload() / 1e6, 2)
+        ping = 0
 
     except:
 
-        ping = [0]
-        download = [0]
-        upload = [0]
+        ping = 0
+        download = 0
+        upload = 0
 
     # Get the Date/Time
     time_date = time.strftime('%m/%d/%y')
     time_time = time.strftime('%H:%M')
 
     # Create a CSV Line
-    csv_line = (time_date, time_time, ping[0], download[0], upload[0])
+    csv_line = (time_date, time_time, ping, download, upload)
     csv_line_string = '%s, %s, %f, %f, %f' % csv_line
     print(csv_line_string)
 
@@ -63,11 +49,11 @@ def main():
     WriteToCsv(filename=FILENAME, values=csv_line, header=HEADER)
 
     # Upload file to Google Drive
-    drive = AuthenticateGoogleDrive()
-    DeleteDriveFile(drive=drive, filename=FILENAME, folder='root')
-    drive_file = drive.CreateFile()
-    drive_file.SetContentFile(FILENAME)
-    drive_file.Upload()
+    # drive = AuthenticateGoogleDrive()
+    # DeleteDriveFile(drive=drive, filename=FILENAME, folder='root')
+    # drive_file = drive.CreateFile()
+    # drive_file.SetContentFile(FILENAME)
+    # drive_file.Upload()
 
 
 def WriteToCsv(filename, values, header=None):
