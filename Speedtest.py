@@ -26,8 +26,8 @@ def main():
 
         # Run the Speed Test
         speed_test = speedtest.Speedtest()
-        download = round(speed_test.download() / 1e6, 2)
-        upload = round(speed_test.upload() / 1e6, 2)
+        download = round(speed_test.download() / 104857, 2)
+        upload = round(speed_test.upload() / 104857, 2)
         ping = 0
 
     except:
